@@ -4,3 +4,5 @@
 test.db
 
 src/__pycache__/
+
+src/routers/__pycache__/
