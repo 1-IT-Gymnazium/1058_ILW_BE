@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from db.models import Item
-from schemas import ItemCreate
+from src.db.models import Item
+from src.schemas import ItemCreate
 
 def get_item(db: Session, item_id: int):
     return db.query(Item).filter(Item.id == item_id).first()

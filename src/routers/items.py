@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.database import SessionLocal
-from crud import get_item, create_item
-from schemas import Item, ItemCreate
+from src.db.database import SessionLocal
+from src.crud import get_item, create_item
+from src.schemas import Item, ItemCreate
 
 router = APIRouter(prefix="/items", tags=["items"])
 
