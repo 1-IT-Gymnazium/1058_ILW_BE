@@ -3,8 +3,6 @@
 
 test.db
 
-src/__pycache__/
-
-src/routers/__pycache__/
+**/__pycache__/
 
 venv/
