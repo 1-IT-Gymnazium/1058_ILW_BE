@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 
-from sqlalchemy import Date, Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Date, Column, ForeignKey, Integer, String, Table, Boolean, DateTime
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -22,18 +22,21 @@ class User(Base):
     password: Mapped[str] = mapped_column(String)
 
 
-class Lunch(Base):
-    __tablename__ = "lunches"
+class Meal(Base):
+    __tablename__ = "meals"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    lunch_number: Mapped[int] = mapped_column(Integer)
+    meal_number: Mapped[int] = mapped_column(Integer)
     name: Mapped[str] = mapped_column(String)
     date: Mapped[datetime.date] = mapped_column(Date)
 
 
-UserLunch = Table(
-    "users_lunches",
-    Base.metadata,
-    Column("user_id", ForeignKey("users.id")),
-    Column("lunch_id", ForeignKey("lunches.id")),
-)
+class Order(Base):
+    __tablename__ = 'user_meals'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    meal_id: Mapped[int] = mapped_column(ForeignKey('meals.id'))
+    status: Mapped[bool] = mapped_column(Boolean)
+    withdrawed_at: Mapped[datetime.datetime] = mapped_column(DateTime)
+
+

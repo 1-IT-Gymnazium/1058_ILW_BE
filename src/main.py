@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from src.db.database import engine
-from src.db.models import Base
-from src.routers import items
-import uvicorn
+from db.database import engine
+from db.models import Base
+from routers import items
+import httpx
 
 # Create the database tables
 Base.metadata.create_all(bind=engine)
@@ -12,9 +12,9 @@ app = FastAPI()
 # Include routers
 app.include_router(items.router)
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the FastAPI application!"}
-
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+#Connect to RaspberryPi
+@app.get("/fetch-data")
+def fetch_data():
+    with httpx.Client() as client:
+        response = client.get("http://127.0.0.1:8000/data")
+        return {"response": response.json()}
