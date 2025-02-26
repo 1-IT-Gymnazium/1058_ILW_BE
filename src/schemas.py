@@ -1,11 +1,25 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError, AfterValidator
 import datetime
+from typing_extensions import Annotated
+
+#Funkce CheckMealValue kontroluje jestli má jídlo povolené čísla
+def CheckMealValue(v: int):
+        if (v > 3 or v < 1):
+            raise ValueError("value must be between or containing 1-3")
+        return v
+
+def CheckUserNumberLength(v: int):
+    length = len(str(v))
+    if(length == 4):
+        return v
+    else:
+        raise ValueError("User number must be 4 digits long")
 
 class UserBase(BaseModel):
     name: str
     surname: str
     ISIC_id: str
-    user_number: int
+    user_number: Annotated[int, AfterValidator(CheckUserNumberLength)]
     password: str
 
 
@@ -23,7 +37,7 @@ class User(UserBase):
 
 
 class MealBase(BaseModel):
-    meal_number: int
+    meal_number: Annotated[int, AfterValidator(CheckMealValue)]
     name: str
     date: datetime.date
 
