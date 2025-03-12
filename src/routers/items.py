@@ -1,8 +1,9 @@
 from datetime import date
 from typing import Any, Dict, List
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Security
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
+from utils import VerifyToken
 from crud import (
     create_meal, create_order, create_user, get_all_meals, get_all_users, get_meal_by_id, get_order_by_id,
     get_user_by_ISIC, get_user_meal_info, update_meal_by_id, update_order, update_user,
@@ -12,6 +13,8 @@ from schemas import (
     Order, User, Meal, MealCreate, OrderCreate, UserCreate,
     UserUpdate, MealUpdate, OrderUpdate
 )
+
+auth = VerifyToken()
 
 # Router for user-related endpoints
 router_user = APIRouter(prefix="/users", tags=["users"])
@@ -43,8 +46,8 @@ def create_user_endpoint(user: UserCreate, db: Session = Depends(get_db)):
     """
     return create_user(db=db, user=user)
 
-@router_user.get("/", response_model=List[User])
-def get_all_users_endpoint(db: Session = Depends(get_db)):
+@router_user.get("/private", response_model=List[User])
+def get_all_users_endpoint(db: Session = Depends(get_db), auth_result: str = Security(auth.verify)):
     """
     Retrieve all users.
     

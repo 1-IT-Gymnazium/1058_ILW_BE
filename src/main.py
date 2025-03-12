@@ -4,6 +4,11 @@ from db.database import engine
 from db.models import Base
 from routers import items
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends, FastAPI 
+from fastapi.security import HTTPBearer 
+
+# Scheme for the Authorization header
+token_auth_scheme = HTTPBearer()
 
 # Create the database tables
 Base.metadata.create_all(bind=engine)

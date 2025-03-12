@@ -289,7 +289,7 @@ def get_user_meal_info(db: Session, isic_id: str) -> Dict[str, Any]:
     # Získání ID uživatele podle ISIC_id
     user = db.query(User).filter(User.ISIC_id == isic_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User with this ISIC ID not found")
+        raise HTTPException(status_code=404, detail="Tento uživatel nebyl nalezen")
 
     # Hledání objednávky pouze pro dnešní datum
     result = (
@@ -307,7 +307,7 @@ def get_user_meal_info(db: Session, isic_id: str) -> Dict[str, Any]:
     )
 
     if not result:
-        raise HTTPException(status_code=404, detail="No meal found for this user today + {today}")
+        raise HTTPException(status_code=404, detail="Tento uživatel dnes nemá jídlo")
 
     return {
         "user_name": result.user_name,
