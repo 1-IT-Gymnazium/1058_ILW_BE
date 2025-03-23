@@ -1,39 +1,63 @@
 from typing import Optional
 import jwt
-from fastapi import Depends, HTTPException, status 
+from fastapi import Depends, HTTPException, status
 from fastapi.security import SecurityScopes, HTTPAuthorizationCredentials, HTTPBearer
 from config import get_settings
 
+
 class UnauthorizedException(HTTPException):
+    """Exception raised when authentication token is invalid or lacks necessary permissions."""
+
     def __init__(self, detail: str, **kwargs):
+        """
+        Initializes UnauthorizedException.
+
+        :param detail: Detailed message explaining why the exception was raised.
+        :param kwargs: Additional keyword arguments passed to HTTPException.
+        """
         super().__init__(status.HTTP_403_FORBIDDEN, detail=detail)
 
+
 class UnauthenticatedException(HTTPException):
+    """Exception raised when authentication token is missing or not provided."""
+
     def __init__(self):
+        """Initializes UnauthenticatedException with a default message."""
         super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Requires authentication"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Requires authentication"
         )
 
+
 class VerifyToken:
-    """Does all the token verification using PyJWT"""
+    """Class responsible for verifying JWT tokens using PyJWT and JWKS."""
 
     def __init__(self):
+        """Initializes VerifyToken by configuring JWKS client."""
         self.config = get_settings()
 
-        # This gets the JWKS from a given URL and does processing so you can
-        # use any of the keys available
+        # Fetch JWKS from a URL provided by Auth0 domain
         jwks_url = f'https://{self.config.auth0_domain}/.well-known/jwks.json'
         self.jwks_client = jwt.PyJWKClient(jwks_url)
 
-        # 👇 new code
-    async def verify(self,
-                     security_scopes: SecurityScopes,
-                     token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer())
-                     ):
-        if token is None:
-            raise UnauthenticatedException
+    async def verify(
+        self,
+        security_scopes: SecurityScopes,
+        token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer())
+    ):
+        """
+        Verifies JWT token and returns the payload if valid.
 
-        # This gets the 'kid' from the passed token
+        :param security_scopes: Security scopes required for accessing certain endpoints.
+        :param token: JWT token extracted from the HTTP Authorization header.
+        :return: Decoded JWT payload if token is valid.
+
+        :raises UnauthenticatedException: When no token is provided.
+        :raises UnauthorizedException: When token verification fails or decoding errors occur.
+        """
+        if token is None:
+            raise UnauthenticatedException()
+
         try:
             signing_key = self.jwks_client.get_signing_key_from_jwt(
                 token.credentials
@@ -53,5 +77,5 @@ class VerifyToken:
             )
         except Exception as error:
             raise UnauthorizedException(str(error))
-    
+
         return payload
