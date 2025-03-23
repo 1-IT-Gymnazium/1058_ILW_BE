@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, ValidationError, AfterValidator
 import datetime
 from typing_extensions import Annotated
@@ -85,11 +86,13 @@ class OrderBase(BaseModel):
     status: bool | None = True
     withdrawed_at: datetime.datetime | None = None
 
-class OrderCreate(OrderBase):
-    """
-    Schema for creating a new order.
-    """
-    pass
+class OrderCreate(BaseModel):
+    name: str  # Jméno uživatele
+    surname: str  # Příjmení uživatele
+    meal_number: int  # Číslo jídla
+    status: bool  # Stav objednávky (např. True = aktivní)
+    withdrawed_at: Optional[datetime.datetime] = None  # Čas výdeje (nepovinné)
+  
 
 class OrderUpdate(OrderBase):
     """
