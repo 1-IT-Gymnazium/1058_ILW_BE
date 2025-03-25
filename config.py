@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     auth0_api_audience: str
     auth0_issuer: str
     auth0_algorithms: str
+    neondb_string : str
 
     class Config:
         env_file = ".env"
