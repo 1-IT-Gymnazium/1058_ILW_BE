@@ -14,9 +14,13 @@ from schemas import (
     UserUpdate, MealUpdate, OrderUpdate
 )
 
+"""
+API route definitions for users, meals, and orders.
+Each router is registered with appropriate endpoints using FastAPI's APIRouter.
+"""
+
 auth = VerifyToken()
 
-# Router for user-related endpoints
 router_user = APIRouter(prefix="/users", tags=["users"])
 
 def get_db():

@@ -30,8 +30,9 @@ class User(Base):
     :param password: User's password.
     :type password: str
     :param meals: List of meals associated with the user through orders.
-    :type meals: list[Meal]
+    :type meals: list[src.db.models.Meal]
     """
+
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -60,7 +61,7 @@ class Meal(Base):
     :param date: Date when the meal is available.
     :type date: datetime.date
     :param users: List of users who have ordered this meal.
-    :type users: list[User]
+    :type users: list[src.db.models.User]
     """
     __tablename__ = "meals"
 
@@ -90,9 +91,9 @@ class Order(Base):
     :param withdrawed_at: Timestamp when the order was withdrawn.
     :type withdrawed_at: datetime.datetime
     :param user: Relationship to the User model.
-    :type user: User
+    :type user: src.db.models.User
     :param meal: Relationship to the Meal model.
-    :type meal: Meal
+    :type meal: src.db.models.Meal
     """
     __tablename__ = 'orders'
     

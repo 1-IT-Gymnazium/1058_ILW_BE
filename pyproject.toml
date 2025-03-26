@@ -12,6 +12,10 @@ sqlalchemy = "^2.0.36"
 psycopg2 = "^2.9.10"
 pydantic-settings = "^2.8.1"
 pyjwt = "^2.10.1"
+sphinx = "^8.2.3"
+sphinx-rtd-theme = "^3.0.2"
+sphinx-autobuild = "^2024.10.3"
+autodoc-pydantic = "^2.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
